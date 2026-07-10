@@ -295,21 +295,30 @@ class AurelisseEngine {
   renderProductsView() {
     const container = document.getElementById('products-main-grid');
     const titleEl = document.getElementById('products-page-title');
+    const selectEl = document.getElementById('filter-category-select');
     if (!container) return;
 
     if (titleEl) {
       titleEl.innerText = this.activeCategory === 'All' ? 'Complete Place Vendôme Collection' : `${this.activeCategory} Collection`;
     }
 
+    if (selectEl && selectEl.value !== this.activeCategory) {
+      selectEl.value = this.activeCategory;
+    }
+
     let filtered = [...PRODUCTS];
 
     if (this.activeCategory !== 'All') {
-      filtered = filtered.filter(p => p.category === this.activeCategory || p.subcategory === this.activeCategory);
+      filtered = filtered.filter(p => 
+        p.category === this.activeCategory || 
+        p.subcategory === this.activeCategory || 
+        (p.collections && p.collections.includes(this.activeCategory))
+      );
     }
 
     if (this.searchQuery) {
       const q = this.searchQuery.toLowerCase();
-      filtered = filtered.filter(p => p.name.toLowerCase().includes(q) || p.description.toLowerCase().includes(q) || p.category.toLowerCase().includes(q));
+      filtered = filtered.filter(p => p.name.toLowerCase().includes(q) || p.description?.toLowerCase().includes(q) || p.category.toLowerCase().includes(q));
     }
 
     // Sort logic
@@ -325,8 +334,8 @@ class AurelisseEngine {
 
     if (filtered.length === 0) {
       container.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 5rem 0;">
-        <h3 style="margin-bottom: 1rem;">No Masterpieces Found</h3>
-        <p>Try clearing your search query or selecting a different category.</p>
+        <h3 style="margin-bottom: 1rem;">No Masterpieces Found in ${this.activeCategory}</h3>
+        <p>Try clearing your search query or selecting a different Place Vendôme collection.</p>
         <button class="btn btn-primary" style="margin-top: 1.5rem;" onclick="app.resetFilters()">Reset All Filters</button>
       </div>`;
     } else {

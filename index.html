@@ -181,6 +181,22 @@
         <h1 id="products-page-title">Complete Place Vendôme Collection</h1>
       </div>
 
+      <!-- Interactive Category Quick Pills -->
+      <div style="display: flex; gap: 0.8rem; overflow-x: auto; padding: 0 5% 1.8rem 5%; scrollbar-width: none; -ms-overflow-style: none;">
+        <button class="btn btn-outline" style="padding: 0.5rem 1.2rem; font-size: 0.78rem; white-space: nowrap;" onclick="app.activeCategory='All'; app.renderProductsView();">✦ All Masterpieces</button>
+        <button class="btn btn-outline" style="padding: 0.5rem 1.2rem; font-size: 0.78rem; white-space: nowrap;" onclick="app.activeCategory='Rings'; app.renderProductsView();">Rings</button>
+        <button class="btn btn-outline" style="padding: 0.5rem 1.2rem; font-size: 0.78rem; white-space: nowrap;" onclick="app.activeCategory='Necklaces'; app.renderProductsView();">Necklaces</button>
+        <button class="btn btn-outline" style="padding: 0.5rem 1.2rem; font-size: 0.78rem; white-space: nowrap;" onclick="app.activeCategory='Earrings'; app.renderProductsView();">Earrings</button>
+        <button class="btn btn-outline" style="padding: 0.5rem 1.2rem; font-size: 0.78rem; white-space: nowrap;" onclick="app.activeCategory='Bracelets'; app.renderProductsView();">Bracelets</button>
+        <button class="btn btn-outline" style="padding: 0.5rem 1.2rem; font-size: 0.78rem; white-space: nowrap;" onclick="app.activeCategory='Bridal Collection'; app.renderProductsView();">Bridal</button>
+        <button class="btn btn-outline" style="padding: 0.5rem 1.2rem; font-size: 0.78rem; white-space: nowrap;" onclick="app.activeCategory='Men\'s Jewellery'; app.renderProductsView();">Men's</button>
+        <button class="btn btn-outline" style="padding: 0.5rem 1.2rem; font-size: 0.78rem; white-space: nowrap;" onclick="app.activeCategory='Diamond Collection'; app.renderProductsView();">Diamond Collection</button>
+        <button class="btn btn-outline" style="padding: 0.5rem 1.2rem; font-size: 0.78rem; white-space: nowrap;" onclick="app.activeCategory='Gold Collection'; app.renderProductsView();">Gold Collection</button>
+        <button class="btn btn-outline" style="padding: 0.5rem 1.2rem; font-size: 0.78rem; white-space: nowrap;" onclick="app.activeCategory='Platinum Collection'; app.renderProductsView();">Platinum PT950</button>
+        <button class="btn btn-outline" style="padding: 0.5rem 1.2rem; font-size: 0.78rem; white-space: nowrap;" onclick="app.activeCategory='Pearl Collection'; app.renderProductsView();">Pearl</button>
+        <button class="btn btn-outline" style="padding: 0.5rem 1.2rem; font-size: 0.78rem; white-space: nowrap;" onclick="app.activeCategory='Watches'; app.renderProductsView();">Watches</button>
+      </div>
+
       <!-- Filter & Sort Bar -->
       <div class="filter-bar" style="margin: 0 5% 3rem 5%;">
         <div style="display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;">
