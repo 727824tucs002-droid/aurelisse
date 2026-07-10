@@ -1,635 +1,280 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Aurelisse — L'Éclat de l'Élégance. Award-winning Parisian High Jewellery & Luxury E-Commerce Boutique. Discover our GIA certified diamond rings, royal sapphire necklaces, and bespoke heritage creations." />
-  <meta name="keywords" content="luxury jewellery, diamond rings, sapphire necklaces, Place Vendome, engagement rings, cartier style, tiffany style, bespoke jewellery" />
-  <meta name="theme-color" content="#C9A961" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aurelisse — L'Éclat de l'Élégance | Luxury Place Vendôme Jewellery</title>
   
-  <title>Aurelisse — L'Éclat de l'Élégance | Haute Joaillerie</title>
+  <!-- Relative Favicon & Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  
+  <!-- Relative CSS (NO LEADING SLASH!) -->
+  <link rel="stylesheet" href="css/style.css">
 
-  <!-- CSS Styling System -->
-  <link rel="stylesheet" href="./css/style.css" />
+  <style>
+    /* Ensure content is always visible and animations don't block display if interrupted */
+    .app-view { display: none; width: 100%; min-height: 80vh; }
+    .app-view.active { display: block; }
+    .aos-fade, .aos-slide-up, .aos-zoom { opacity: 1 !important; transform: none !important; transition: none !important; }
+    
+    /* Navigation Active State */
+    .nav-link.active { color: var(--accent-gold) !important; font-weight: 600; }
+    
+    /* Toast Notification */
+    #cart-toast {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      background: #1A1A1A;
+      color: #FAF7F2;
+      border: 1px solid #C9A961;
+      padding: 1rem 1.8rem;
+      border-radius: 4px;
+      z-index: 9999;
+      display: none;
+      font-family: var(--font-serif);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    }
+  </style>
 </head>
-<body>
+<body class="bg-cream">
 
-  <!-- Page Loader -->
-  <div id="page-loader">
-    <div class="loader-monogram">A</div>
-    <div class="loader-text">L'Éclat de l'Élégance</div>
+  <!-- ==================== TOP ANNOUNCEMENT BAR ==================== -->
+  <div class="announcement-bar" style="background: #1A1A1A; color: #FAF7F2; text-align: center; padding: 0.6rem 1rem; font-size: 0.78rem; letter-spacing: 0.15em; text-transform: uppercase;">
+    <span>✦ Complimentary White-Glove Armored Shipping on All Orders Over $2,500 • Place Vendôme Paris ✦</span>
   </div>
 
-  <!-- Scroll Progress Bar -->
-  <div id="scroll-progress"></div>
-
-  <!-- Toast Notification Container -->
-  <div id="toast-container" class="toast-container"></div>
-
-  <!-- Sticky Navigation Bar -->
-  <nav class="navbar">
-    <button class="hamburger" aria-label="Toggle Navigation">
-      <span></span><span></span><span></span>
-    </button>
-
-    <a href="#home" class="navbar-brand">
-      <span class="logo-title">Aurelisse</span>
-      <span class="logo-subtitle">Paris • Place Vendôme</span>
-    </a>
-
-    <ul class="nav-menu">
-      <li><a href="#home" class="nav-link active">Home</a></li>
-      <li><a href="#categories" class="nav-link">Collections</a></li>
-      <li><a href="#products" class="nav-link">Masterpieces</a></li>
-      <li><a href="#about" class="nav-link">La Maison</a></li>
-      <li><a href="#offers" class="nav-link">Privileges</a></li>
-      <li><a href="#journal" class="nav-link">Journal</a></li>
-      <li><a href="#faqs" class="nav-link">Concierge</a></li>
-      <li><a href="#contact" class="nav-link">Salons</a></li>
-    </ul>
-
-    <div class="nav-icons">
-      <button class="nav-icon-btn" id="toggle-search" title="Search Archive">
-        <span>🔍</span>
-      </button>
-      <button class="nav-icon-btn" id="toggle-theme" title="Toggle Light/Dark Theme">
-        <span>🌙</span>
-      </button>
-      <a href="#wishlist" class="nav-icon-btn" title="Wishlist">
-        <span>🤍</span>
-        <span class="badge-count" id="badge-wishlist-count">0</span>
+  <!-- ==================== MASTER NAVIGATION ==================== -->
+  <header class="navbar" style="background: var(--bg-card); border-bottom: 1px solid var(--border-gold); position: sticky; top: 0; z-index: 1000; padding: 1rem 5%;">
+    <div style="display: flex; justify-content: space-between; align-items: center; max-width: 1400px; margin: 0 auto;">
+      <!-- Brand Logo -->
+      <a href="javascript:void(0)" onclick="app.showSection('home')" class="brand-logo" style="text-decoration: none; display: flex; flex-direction: column; align-items: center;">
+        <span style="font-family: var(--font-serif); font-size: 1.8rem; font-weight: 700; letter-spacing: 0.25em; color: var(--text-primary); text-transform: uppercase;">Aurelisse</span>
+        <span style="font-size: 0.65rem; letter-spacing: 0.35em; color: var(--accent-gold); text-transform: uppercase;">Paris • Place Vendôme</span>
       </a>
-      <a href="#cart" class="nav-icon-btn" title="Shopping Trunk">
-        <span>🛍️</span>
-        <span class="badge-count" id="badge-cart-count">0</span>
-      </a>
-    </div>
-  </nav>
 
-  <!-- ==================== VIEW 1: HOME ==================== -->
-  <main id="view-home" class="app-view">
-    <!-- Hero Slider -->
-    <section class="hero-section" id="hero-slider-container"></section>
+      <!-- Navigation Links -->
+      <nav class="nav-links" style="display: flex; gap: 2.5rem; align-items: center;">
+        <a href="javascript:void(0)" class="nav-link active" data-section="home" style="text-decoration: none; color: var(--text-primary); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.15em;">Home</a>
+        <a href="javascript:void(0)" class="nav-link" data-section="products" style="text-decoration: none; color: var(--text-primary); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.15em;">Shop Masterpieces</a>
+        <a href="javascript:void(0)" class="nav-link" data-section="about" style="text-decoration: none; color: var(--text-primary); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.15em;">Maison & Heritage</a>
+        <a href="javascript:void(0)" class="nav-link" data-section="contact" style="text-decoration: none; color: var(--text-primary); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.15em;">VIP Concierge</a>
+      </nav>
 
-    <!-- Scroll Down Chevron -->
-    <a href="#home-philosophy" class="scroll-down-indicator">
-      <span>Scroll To Discover</span>
-      <div class="scroll-down-chevron"></div>
-    </a>
-
-    <!-- Philosophy & Quiet Luxury Statement -->
-    <section id="home-philosophy" class="section-padding bg-cream">
-      <div class="section-header aos-slide-up">
-        <span class="sub-label">The Aurelisse Creed</span>
-        <h2>Restraint is the Ultimate Luxury</h2>
-        <p style="max-width: 680px; margin: 1rem auto 0 auto;">
-          We believe high jewellery should speak in quiet whispers rather than loud proclamations. Every facet we cut, every platinum pricking we sculpt in our Place Vendôme atelier is executed with purposeful intention, creating heirloom creations intended to endure for centuries.
-        </p>
-      </div>
-    </section>
-
-    <!-- Featured Categories -->
-    <section class="section-padding bg-ivory">
-      <div class="section-header aos-fade">
-        <span class="sub-label">Curated Galleries</span>
-        <h2>Iconic High Jewellery Collections</h2>
-      </div>
-      <div class="categories-grid" id="home-categories-grid"></div>
-      <div style="text-align:center; margin-top: 3.5rem;" class="aos-slide-up">
-        <a href="#categories" class="btn btn-outline">Explore All 20 Collections →</a>
-      </div>
-    </section>
-
-    <!-- Trending & Best Seller Masterpieces -->
-    <section class="section-padding bg-cream">
-      <div class="section-header aos-fade">
-        <span class="sub-label">High Jewellery Selection</span>
-        <h2>Trending Masterpieces</h2>
-      </div>
-      <div class="products-grid" id="home-trending-grid"></div>
-      <div style="text-align:center; margin-top: 4rem;" class="aos-slide-up">
-        <a href="#products" class="btn btn-primary">Discover Complete Archive →</a>
-      </div>
-    </section>
-
-    <!-- Press / Recognition Banner -->
-    <section class="section-padding bg-ivory" style="padding: 3rem 5%; border-top: 1px solid var(--border-gold); border-bottom: 1px solid var(--border-gold);">
-      <div style="text-align: center; font-size: 0.72rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 1.8rem;">
-        As Celebrated In The World's Most Prestigious Journals
-      </div>
-      <div style="display: flex; flex-wrap: wrap; justify-content: space-around; align-items: center; gap: 2rem; opacity: 0.65;">
-        <span style="font-family: var(--font-serif); font-size: 1.6rem; letter-spacing: 0.1em; font-weight: 600;">VOGUE PARIS</span>
-        <span style="font-family: var(--font-serif); font-size: 1.6rem; letter-spacing: 0.15em; font-style: italic;">Harper's BAZAAR</span>
-        <span style="font-family: var(--font-serif); font-size: 1.5rem; letter-spacing: 0.12em;">LE FIGARO</span>
-        <span style="font-family: var(--font-serif); font-size: 1.6rem; letter-spacing: 0.18em; font-weight: 300;">TATLER</span>
-        <span style="font-family: var(--font-serif); font-size: 1.5rem; letter-spacing: 0.12em;">L'OFFICIEL</span>
-      </div>
-    </section>
-
-    <!-- Book an Appointment Banner -->
-    <section class="section-padding bg-cream" style="position: relative; overflow: hidden;">
-      <div style="max-width: 900px; margin: 0 auto; text-align: center; padding: 4rem 3rem; border: 1px solid var(--border-gold); background: var(--bg-card); position: relative; z-index: 2;" class="aos-zoom">
-        <span class="sub-label">Private VIP Consultations</span>
-        <h2 style="margin-bottom: 1rem;">Experience La Maison in Person</h2>
-        <p style="max-width: 600px; margin: 0 auto 2rem auto;">
-          Whether in our Place Vendôme private salon, our Mayfair suite, or via a 4K high-definition live video connection, our Senior Gemologists await to assist in commissioning your bespoke piece.
-        </p>
-        <button class="btn btn-gold" onclick="app.openModal('modal-appointment')">Book a Private Appointment</button>
-      </div>
-    </section>
-
-    <!-- Client Testimonials -->
-    <section class="section-padding bg-ivory">
-      <div class="section-header aos-fade">
-        <span class="sub-label">Words of Reverence</span>
-        <h2>From Our Distinguished Patrons</h2>
-      </div>
-      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2.5rem; padding: 0 5%;">
-        <div style="background: var(--bg-card); padding: 2.5rem; border: 1px solid var(--border-gold);" class="aos-slide-up">
-          <div class="stars" style="margin-bottom: 1rem;">★ ★ ★ ★ ★</div>
-          <p class="serif-italic" style="font-size: 1.15rem; color: var(--text-primary); margin-bottom: 1.5rem;">
-            "Receiving our bespoke Aurelisse engagement ring felt like stepping into royal history. The packaging, the weight of the platinum, the fire of the diamond—perfection."
-          </p>
-          <div style="font-weight: 600; font-size: 0.9rem;">Lady Victoria H.</div>
-          <div style="font-size: 0.75rem; color: var(--accent-gold); text-transform: uppercase;">London & Zurich</div>
-        </div>
-        <div style="background: var(--bg-card); padding: 2.5rem; border: 1px solid var(--border-gold);" class="aos-slide-up">
-          <div class="stars" style="margin-bottom: 1rem;">★ ★ ★ ★ ★</div>
-          <p class="serif-italic" style="font-size: 1.15rem; color: var(--text-primary); margin-bottom: 1.5rem;">
-            "The online WhatsApp concierge was exceptionally attentive. They filmed a 4K video of the sapphire chandelier earrings under different lighting before I made my purchase."
-          </p>
-          <div style="font-weight: 600; font-size: 0.9rem;">Marcello D.</div>
-          <div style="font-size: 0.75rem; color: var(--accent-gold); text-transform: uppercase;">Milan</div>
-        </div>
-        <div style="background: var(--bg-card); padding: 2.5rem; border: 1px solid var(--border-gold);" class="aos-slide-up">
-          <div class="stars" style="margin-bottom: 1rem;">★ ★ ★ ★ ★</div>
-          <p class="serif-italic" style="font-size: 1.15rem; color: var(--text-primary); margin-bottom: 1.5rem;">
-            "Aurelisse captures true quiet luxury. No loud logos—just breathtaking stones and craftsmanship that speaks for itself across the room."
-          </p>
-          <div style="font-weight: 600; font-size: 0.9rem;">Camilla S.</div>
-          <div style="font-size: 0.75rem; color: var(--accent-gold); text-transform: uppercase;">New York</div>
-        </div>
-      </div>
-    </section>
-  </main>
-
-  <!-- ==================== VIEW 2: PRODUCTS CATALOG ==================== -->
-  <main id="view-products" class="app-view" style="display: none; padding-top: calc(var(--navbar-height) + 2rem);">
-    <div class="section-padding">
-      <div class="section-header">
-        <span class="sub-label">Haute Joaillerie & Classics</span>
-        <h1 id="products-page-title">Complete Place Vendôme Collection</h1>
-      </div>
-
-      <!-- Interactive Category Quick Pills -->
-      <div style="display: flex; gap: 0.8rem; overflow-x: auto; padding: 0 5% 1.8rem 5%; scrollbar-width: none; -ms-overflow-style: none;">
-        <button class="btn btn-outline" style="padding: 0.5rem 1.2rem; font-size: 0.78rem; white-space: nowrap;" onclick="app.activeCategory='All'; app.renderProductsView();">✦ All Masterpieces</button>
-        <button class="btn btn-outline" style="padding: 0.5rem 1.2rem; font-size: 0.78rem; white-space: nowrap;" onclick="app.activeCategory='Rings'; app.renderProductsView();">Rings</button>
-        <button class="btn btn-outline" style="padding: 0.5rem 1.2rem; font-size: 0.78rem; white-space: nowrap;" onclick="app.activeCategory='Necklaces'; app.renderProductsView();">Necklaces</button>
-        <button class="btn btn-outline" style="padding: 0.5rem 1.2rem; font-size: 0.78rem; white-space: nowrap;" onclick="app.activeCategory='Earrings'; app.renderProductsView();">Earrings</button>
-        <button class="btn btn-outline" style="padding: 0.5rem 1.2rem; font-size: 0.78rem; white-space: nowrap;" onclick="app.activeCategory='Bracelets'; app.renderProductsView();">Bracelets</button>
-        <button class="btn btn-outline" style="padding: 0.5rem 1.2rem; font-size: 0.78rem; white-space: nowrap;" onclick="app.activeCategory='Bridal Collection'; app.renderProductsView();">Bridal</button>
-        <button class="btn btn-outline" style="padding: 0.5rem 1.2rem; font-size: 0.78rem; white-space: nowrap;" onclick="app.activeCategory='Men\'s Jewellery'; app.renderProductsView();">Men's</button>
-        <button class="btn btn-outline" style="padding: 0.5rem 1.2rem; font-size: 0.78rem; white-space: nowrap;" onclick="app.activeCategory='Diamond Collection'; app.renderProductsView();">Diamond Collection</button>
-        <button class="btn btn-outline" style="padding: 0.5rem 1.2rem; font-size: 0.78rem; white-space: nowrap;" onclick="app.activeCategory='Gold Collection'; app.renderProductsView();">Gold Collection</button>
-        <button class="btn btn-outline" style="padding: 0.5rem 1.2rem; font-size: 0.78rem; white-space: nowrap;" onclick="app.activeCategory='Platinum Collection'; app.renderProductsView();">Platinum PT950</button>
-        <button class="btn btn-outline" style="padding: 0.5rem 1.2rem; font-size: 0.78rem; white-space: nowrap;" onclick="app.activeCategory='Pearl Collection'; app.renderProductsView();">Pearl</button>
-        <button class="btn btn-outline" style="padding: 0.5rem 1.2rem; font-size: 0.78rem; white-space: nowrap;" onclick="app.activeCategory='Watches'; app.renderProductsView();">Watches</button>
-      </div>
-
-      <!-- Filter & Sort Bar -->
-      <div class="filter-bar" style="margin: 0 5% 3rem 5%;">
-        <div style="display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;">
-          <label style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.15em;">Filter By:</label>
-          <select id="filter-category-select" class="filter-select">
-            <option value="All">All Categories & Collections</option>
-            <option value="Rings">Rings</option>
-            <option value="Necklaces">Necklaces</option>
-            <option value="Earrings">Earrings</option>
-            <option value="Bracelets">Bracelets</option>
-            <option value="Bridal Collection">Bridal Collection</option>
-            <option value="Men's Jewellery">Men's Jewellery</option>
-            <option value="Kids' Jewellery">Kids' Jewellery</option>
-            <option value="Gold Collection">Gold Collection</option>
-            <option value="Diamond Collection">Diamond Collection</option>
-            <option value="Gemstone Collection">Gemstone Collection</option>
-            <option value="Platinum Collection">Platinum Collection</option>
-            <option value="Watches">Watches</option>
-            <option value="Accessories">Accessories</option>
-          </select>
-          <button class="btn btn-outline" style="padding: 0.6rem 1.2rem; font-size: 0.75rem;" onclick="app.resetFilters()">Reset</button>
-        </div>
-
-        <div style="display: flex; gap: 1rem; align-items: center;">
-          <label style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.15em;">Sort By:</label>
-          <select id="filter-sort-select" class="filter-select">
-            <option value="featured">Curated & Featured</option>
-            <option value="newest">Newest Creations</option>
-            <option value="price-low">Price: Low to High</option>
-            <option value="price-high">Price: High to Low</option>
-            <option value="best-rated">Highest Patron Rating</option>
-          </select>
-        </div>
-      </div>
-
-      <div class="products-grid" id="products-main-grid"></div>
-    </div>
-  </main>
-
-  <!-- ==================== VIEW 3: PRODUCT DETAILS ==================== -->
-  <main id="view-product-details" class="app-view product-detail-view" style="display: none;"></main>
-
-  <!-- ==================== VIEW 4: COLLECTIONS / CATEGORIES ==================== -->
-  <main id="view-categories" class="app-view" style="display: none; padding-top: calc(var(--navbar-height) + 3rem);">
-    <div class="section-padding">
-      <div class="section-header">
-        <span class="sub-label">Master Archives</span>
-        <h1>All 20 Curated Collections</h1>
-        <p>From the high-jewellery grand suites of Place Vendôme to our daily modern layering chains.</p>
-      </div>
-      <div class="categories-grid" id="categories-view-grid"></div>
-    </div>
-  </main>
-
-  <!-- ==================== VIEW 5: WISHLIST ==================== -->
-  <main id="view-wishlist" class="app-view" style="display: none; padding-top: calc(var(--navbar-height) + 3rem);">
-    <div class="section-padding">
-      <div class="section-header">
-        <span class="sub-label">Personal Curation</span>
-        <h1>Your Private Wishlist</h1>
-        <p>Your saved high-jewellery desires, ready for commission or consultation.</p>
-      </div>
-      <div class="products-grid" id="wishlist-grid-container"></div>
-    </div>
-  </main>
-
-  <!-- ==================== VIEW 6: ABOUT US ==================== -->
-  <main id="view-about" class="app-view" style="display: none; padding-top: calc(var(--navbar-height) + 3rem);">
-    <div class="section-padding bg-cream">
-      <div class="section-header">
-        <span class="sub-label">The House of Aurelisse</span>
-        <h1>132 Years of Heritage & Craftsmanship</h1>
-        <p>Born on Rue de la Paix in 1894, the House of Aurelisse has remained an beacon of uncompromising purity, architectural symmetry, and ethical high joaillerie.</p>
-      </div>
-
-      <!-- Animated Statistics Row -->
-      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 2rem; padding: 0 5%; margin-bottom: 5rem; text-align: center;">
-        <div style="border: 1px solid var(--border-gold); padding: 2rem; background: var(--bg-card);">
-          <div style="font-family: var(--font-serif); font-size: 3rem; color: var(--accent-gold); font-weight: 600;">1894</div>
-          <div style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.2em; color: var(--text-muted); margin-top: 0.5rem;">Year Founded in Paris</div>
-        </div>
-        <div style="border: 1px solid var(--border-gold); padding: 2rem; background: var(--bg-card);">
-          <div style="font-family: var(--font-serif); font-size: 3rem; color: var(--accent-gold); font-weight: 600;">100%</div>
-          <div style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.2em; color: var(--text-muted); margin-top: 0.5rem;">Ethical & Recycled Gold</div>
-        </div>
-        <div style="border: 1px solid var(--border-gold); padding: 2rem; background: var(--bg-card);">
-          <div style="font-family: var(--font-serif); font-size: 3rem; color: var(--accent-gold); font-weight: 600;">800+</div>
-          <div style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.2em; color: var(--text-muted); margin-top: 0.5rem;">Hours Per Masterpiece</div>
-        </div>
-        <div style="border: 1px solid var(--border-gold); padding: 2rem; background: var(--bg-card);">
-          <div style="font-family: var(--font-serif); font-size: 3rem; color: var(--accent-gold); font-weight: 600;">28</div>
-          <div style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.2em; color: var(--text-muted); margin-top: 0.5rem;">Global Flagship Salons</div>
-        </div>
-      </div>
-
-      <!-- Heritage Story Content -->
-      <div style="max-width: 960px; margin: 0 auto; padding: 0 5%; display: grid; grid-template-columns: 1fr; gap: 4rem;">
-        <div style="display: flex; flex-direction: column; gap: 1.5rem; font-size: 1.05rem;">
-          <h2 style="font-size: 2.4rem;">The Founder's Note</h2>
-          <p class="serif-italic" style="font-size: 1.3rem; color: var(--text-primary); border-left: 2px solid var(--accent-gold); padding-left: 1.5rem;">
-            "We do not create jewellery to show wealth; we create jewellery to capture light, memory, and enduring love across generations." — Henri Aurelisse (Paris, 1912)
-          </p>
-          <p>
-            Every diamond selected by our gemologists must exceed strict optical criteria above and beyond standard GIA certifications. Our master artisans hand-bevel each setting pricker to a microscopic knife-edge, ensuring maximum surface area remains exposed to ambient light while guaranteeing permanent stone retention.
-          </p>
-        </div>
-
-        <div>
-          <h2 style="font-size: 2.4rem; margin-bottom: 2.5rem; text-align: center;">Chronicles of La Maison</h2>
-          <div id="about-timeline" style="display: flex; flex-direction: column; gap: 2.5rem; max-width: 750px; margin: 0 auto;"></div>
-        </div>
-      </div>
-    </div>
-  </main>
-
-  <!-- ==================== VIEW 7: PRIVILEGES & OFFERS ==================== -->
-  <main id="view-offers" class="app-view" style="display: none; padding-top: calc(var(--navbar-height) + 3rem);">
-    <div class="section-padding">
-      <div class="section-header">
-        <span class="sub-label">Inner Circle Privileges</span>
-        <h1>Seasonal Reductions & Compliments</h1>
-        <p>Restrained, elegant offers reserved for our esteemed clientele.</p>
-      </div>
-      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2.5rem; padding: 0 5%;" id="offers-cards-grid"></div>
-    </div>
-  </main>
-
-  <!-- ==================== VIEW 8: JOURNAL (BLOG) ==================== -->
-  <main id="view-journal" class="app-view" style="display: none; padding-top: calc(var(--navbar-height) + 3rem);">
-    <div class="section-padding">
-      <div class="section-header">
-        <span class="sub-label">The Place Vendôme Journal</span>
-        <h1>Essays on Craft, Gemology & Styling</h1>
-        <p>Educational monographs authored by our Senior Gemologists and Head of Archives.</p>
-      </div>
-      <div class="journal-grid" id="journal-posts-grid"></div>
-    </div>
-  </main>
-
-  <!-- ==================== VIEW 9: FAQs / CONCIERGE ==================== -->
-  <main id="view-faqs" class="app-view" style="display: none; padding-top: calc(var(--navbar-height) + 3rem);">
-    <div class="section-padding">
-      <div class="section-header">
-        <span class="sub-label">VIP Client Assistance</span>
-        <h1>Frequently Asked Questions</h1>
-        <p>Everything you need to know regarding authentication, bespoke sizing, and insured worldwide delivery.</p>
-      </div>
-      <div class="faq-container" id="faqs-accordion-container"></div>
-    </div>
-  </main>
-
-  <!-- ==================== VIEW 10: CONTACT & SALONS ==================== -->
-  <main id="view-contact" class="app-view" style="display: none; padding-top: calc(var(--navbar-height) + 3rem);">
-    <div class="section-padding">
-      <div class="section-header">
-        <span class="sub-label">Global Flagship Salons</span>
-        <h1>Connect With La Maison</h1>
-        <p>Visit our private viewing suites or communicate with our Place Vendôme concierge team.</p>
-      </div>
-
-      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 4rem; max-width: 1300px; margin: 0 auto; padding: 0 5%;">
-        <!-- Salons Info -->
-        <div style="display: flex; flex-direction: column; gap: 2.5rem;">
-          <div>
-            <h3 style="font-size: 1.6rem; margin-bottom: 0.5rem; color: var(--accent-gold);">Paris Flagship Headquarters</h3>
-            <p style="font-size: 1rem; color: var(--text-primary); margin-bottom: 0.3rem;">14 Place Vendôme, 75001 Paris, France</p>
-            <p style="font-size: 0.85rem;">Hours: Monday – Saturday (10:00 AM – 7:00 PM CET)</p>
-            <p style="font-size: 0.85rem; color: var(--accent-gold); margin-top: 0.3rem;">concierge.paris@aurelisse.com • +33 1 42 60 88 00</p>
-          </div>
-          <div>
-            <h3 style="font-size: 1.6rem; margin-bottom: 0.5rem;">London Mayfair Salon</h3>
-            <p style="font-size: 1rem; color: var(--text-primary); margin-bottom: 0.3rem;">42 Old Bond Street, London W1S 4QR, United Kingdom</p>
-            <p style="font-size: 0.85rem;">Hours: Monday – Saturday (10:00 AM – 6:30 PM GMT)</p>
-          </div>
-          <div>
-            <h3 style="font-size: 1.6rem; margin-bottom: 0.5rem;">New York Fifth Avenue Suite</h3>
-            <p style="font-size: 1rem; color: var(--text-primary); margin-bottom: 0.3rem;">712 Fifth Avenue, New York, NY 10019, USA</p>
-            <p style="font-size: 0.85rem;">Hours: Monday – Sunday (10:00 AM – 7:00 PM EST)</p>
-          </div>
-        </div>
-
-        <!-- Contact Form -->
-        <div style="background: var(--bg-card); padding: 3rem; border: 1px solid var(--border-gold);">
-          <h3 style="margin-bottom: 1.5rem;">Private Concierge Inquiry</h3>
-          <form onsubmit="event.preventDefault(); app.showToast('Inquiry Dispatched to Place Vendôme Concierge!'); this.reset();" style="display: flex; flex-direction: column; gap: 1.2rem;">
-            <div>
-              <label style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.15em; display: block; margin-bottom: 0.4rem;">Full Name *</label>
-              <input type="text" required placeholder="Lord / Lady / Mr. / Ms." style="width: 100%; padding: 0.8rem; background: var(--bg-primary); border: 1px solid var(--border-subtle); color: var(--text-primary); font-family: var(--font-sans);" />
-            </div>
-            <div>
-              <label style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.15em; display: block; margin-bottom: 0.4rem;">Email Address *</label>
-              <input type="email" required placeholder="client@domain.com" style="width: 100%; padding: 0.8rem; background: var(--bg-primary); border: 1px solid var(--border-subtle); color: var(--text-primary); font-family: var(--font-sans);" />
-            </div>
-            <div>
-              <label style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.15em; display: block; margin-bottom: 0.4rem;">Subject / Preferred Salon</label>
-              <input type="text" placeholder="e.g. Bespoke Ring Commission / Paris Salon Visit" style="width: 100%; padding: 0.8rem; background: var(--bg-primary); border: 1px solid var(--border-subtle); color: var(--text-primary); font-family: var(--font-sans);" />
-            </div>
-            <div>
-              <label style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.15em; display: block; margin-bottom: 0.4rem;">Message *</label>
-              <textarea rows="4" required placeholder="Please detail any gemstone desires, timing, or private viewing requirements..." style="width: 100%; padding: 0.8rem; background: var(--bg-primary); border: 1px solid var(--border-subtle); color: var(--text-primary); font-family: var(--font-sans);"></textarea>
-            </div>
-            <button type="submit" class="btn btn-primary" style="margin-top: 0.8rem;">Send VIP Inquiry</button>
-          </form>
-        </div>
-      </div>
-    </div>
-  </main>
-
-  <!-- ==================== VIEW 11: 404 PAGE ==================== -->
-  <main id="view-404" class="app-view" style="display: none; padding: calc(var(--navbar-height) + 6rem) 5% 6rem 5%; text-align: center;">
-    <div style="max-width: 600px; margin: 0 auto;">
-      <div style="font-family: var(--font-serif); font-size: 6rem; color: var(--accent-gold); font-weight: 300;">404</div>
-      <h2 style="margin-bottom: 1rem;">Masterpiece Not Found</h2>
-      <p style="margin-bottom: 2.5rem;">The requested page or archived jewel has been moved to our permanent vault or does not exist.</p>
-      <a href="#home" class="btn btn-primary">Return to Place Vendôme Home</a>
-    </div>
-  </main>
-
-  <!-- ==================== DRAWERS & MODALS ==================== -->
-  <!-- Drawer & Modal Overlays -->
-  <div class="drawer-overlay" id="drawer-overlay"></div>
-  <div class="modal-overlay" id="modal-overlay"></div>
-
-  <!-- Shopping Cart Drawer -->
-  <aside class="drawer" id="drawer-cart">
-    <div class="drawer-header">
-      <h3 style="font-size: 1.4rem;">Your Shopping Trunk</h3>
-      <button class="close-btn" onclick="app.closeAllDrawersAndModals()">✕</button>
-    </div>
-    <div class="drawer-body" id="cart-items-container"></div>
-    <div class="drawer-footer">
-      <!-- Coupon & Gift Wrap -->
-      <div style="margin-bottom: 1.2rem; display: flex; flex-direction: column; gap: 0.8rem;">
-        <label style="display: flex; align-items: center; gap: 0.6rem; font-size: 0.82rem; cursor: pointer;">
-          <input type="checkbox" onchange="app.toggleGiftWrap(this)" />
-          <span>Add Italian Velvet Gift Trunk & Monogram Card (+$35)</span>
-        </label>
-        <div style="display: flex; gap: 0.5rem;">
-          <input type="text" id="cart-coupon-input" placeholder="Privilege Code (AURELISSE10)" style="flex-grow:1; padding: 0.5rem 0.8rem; background: var(--bg-card); border: 1px solid var(--border-subtle); font-size: 0.8rem; color: var(--text-primary);" />
-          <button class="btn btn-outline" style="padding: 0.5rem 1rem; font-size: 0.72rem;" onclick="app.applyCoupon()">Apply</button>
-        </div>
-      </div>
-
-      <div style="display: flex; justify-content: space-between; font-size: 0.9rem; margin-bottom: 0.4rem;">
-        <span>Subtotal:</span>
-        <span id="cart-subtotal" style="font-weight: 500;">$0</span>
-      </div>
-      <div style="display: flex; justify-content: space-between; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.8rem;">
-        <span>Estimated Insured Tax & Shipping:</span>
-        <span id="cart-tax">$0</span>
-      </div>
-      <div style="display: flex; justify-content: space-between; font-family: var(--font-serif); font-size: 1.5rem; font-weight: 600; border-top: 1px solid var(--border-gold); padding-top: 0.8rem; margin-bottom: 1.5rem;">
-        <span>Total Investment:</span>
-        <span id="cart-total" class="gold-text">$0</span>
-      </div>
-
-      <div style="display: flex; flex-direction: column; gap: 0.8rem;">
-        <button class="btn btn-primary" style="width: 100%;" onclick="app.showToast('Redirecting to Place Vendôme Encrypted Checkout...');">Proceed to VIP Checkout</button>
-        <button class="whatsapp-order-btn" onclick="app.openWhatsAppOrderModal(app.cart[0]?.id || 'ring-solitaire-imp-01')">
-          <span>💬</span> Order via WhatsApp Concierge
+      <!-- Cart Trigger Button -->
+      <div class="nav-actions">
+        <button class="btn btn-outline" onclick="app.showSection('cart')" style="padding: 0.5rem 1.2rem; display: flex; align-items: center; gap: 0.5rem; font-size: 0.82rem;">
+          <span>Shopping Bag</span>
+          <span id="cart-count" style="background: #C9A961; color: white; border-radius: 50%; width: 22px; height: 22px; display: inline-flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 600;">0</span>
         </button>
       </div>
     </div>
-  </aside>
+  </header>
 
-  <!-- Instant Search Drawer -->
-  <aside class="drawer" id="drawer-search" style="max-width: 520px;">
-    <div class="drawer-header">
-      <h3 style="font-size: 1.4rem;">Search High Archives</h3>
-      <button class="close-btn" onclick="app.closeAllDrawersAndModals()">✕</button>
-    </div>
-    <div class="drawer-body">
-      <div>
-        <input type="text" id="live-search-input" placeholder="Type jewel, gemstone, or SKU..." style="width: 100%; padding: 1rem; background: var(--bg-card); border: 1px solid var(--border-gold); font-family: var(--font-serif); font-size: 1.2rem; color: var(--text-primary);" />
-        <span style="font-size: 0.72rem; color: var(--text-muted); display: block; margin-top: 0.5rem; letter-spacing: 0.1em; text-transform: uppercase;">Instant Suggestions & Category Filtering</span>
-      </div>
-      <div id="search-suggestions-box" style="display: flex; flex-direction: column; gap: 0.5rem;"></div>
-    </div>
-  </aside>
-
-  <!-- Quick View Modal -->
-  <div class="modal-box" id="modal-quickview">
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; border-bottom: 1px solid var(--border-subtle); padding-bottom: 0.8rem;">
-      <h3 style="font-size: 1.4rem;">Quick View Monograph</h3>
-      <button class="close-btn" onclick="app.closeAllDrawersAndModals()">✕</button>
-    </div>
-    <div id="quickview-content"></div>
-  </div>
-
-  <!-- Compare Products Modal -->
-  <div class="modal-box" id="modal-compare" style="max-width: 1100px;">
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; border-bottom: 1px solid var(--border-subtle); padding-bottom: 0.8rem;">
-      <h3 style="font-size: 1.4rem;">Side-By-Side Masterpiece Comparison</h3>
-      <button class="close-btn" onclick="app.closeAllDrawersAndModals()">✕</button>
-    </div>
-    <div id="compare-table-body"></div>
-  </div>
-
-  <!-- WhatsApp Order Modal -->
-  <div class="modal-box" id="modal-whatsapp-order" style="max-width: 650px;">
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; border-bottom: 1px solid var(--border-subtle); padding-bottom: 0.8rem;">
-      <h3 style="font-size: 1.4rem;">Place Vendôme WhatsApp Concierge</h3>
-      <button class="close-btn" onclick="app.closeAllDrawersAndModals()">✕</button>
-    </div>
-    <p style="font-size: 0.9rem; margin-bottom: 1.2rem;">
-      Review your pre-filled inquiry below. Clicking dispatch will connect you directly to our live Paris concierge via WhatsApp.
-    </p>
-    <textarea id="whatsapp-msg-preview" rows="9" style="width: 100%; padding: 1rem; background: var(--bg-secondary); border: 1px solid var(--border-gold); font-family: var(--font-sans); font-size: 0.88rem; color: var(--text-primary); margin-bottom: 1.5rem;"></textarea>
-    <button class="whatsapp-order-btn" onclick="app.sendWhatsAppOrder()">
-      <span>💬</span> Dispatch Inquiry via WhatsApp
-    </button>
-  </div>
-
-  <!-- Size Guide Modal -->
-  <div class="modal-box" id="modal-size-guide" style="max-width: 720px;">
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; border-bottom: 1px solid var(--border-subtle); padding-bottom: 0.8rem;">
-      <h3 style="font-size: 1.4rem;">Master Ring & Chain Sizing Guide</h3>
-      <button class="close-btn" onclick="app.closeAllDrawersAndModals()">✕</button>
-    </div>
-    <div style="display: flex; flex-direction: column; gap: 1.5rem;">
-      <div>
-        <h4 style="margin-bottom: 0.6rem; color: var(--accent-gold);">International Ring Sizing Chart</h4>
-        <table style="width: 100%; border-collapse: collapse; font-size: 0.85rem; text-align: left;">
-          <tr style="border-bottom: 1px solid var(--border-gold); background: var(--bg-secondary);">
-            <th style="padding: 8px;">US Size</th>
-            <th style="padding: 8px;">UK / Paris Size</th>
-            <th style="padding: 8px;">Inner Diameter (mm)</th>
-          </tr>
-          <tr style="border-bottom: 1px solid var(--border-subtle);"><td style="padding: 8px;">US 4.5</td><td style="padding: 8px;">48</td><td style="padding: 8px;">15.3 mm</td></tr>
-          <tr style="border-bottom: 1px solid var(--border-subtle);"><td style="padding: 8px;">US 5.0</td><td style="padding: 8px;">49</td><td style="padding: 8px;">15.7 mm</td></tr>
-          <tr style="border-bottom: 1px solid var(--border-subtle);"><td style="padding: 8px;">US 6.0</td><td style="padding: 8px;">52</td><td style="padding: 8px;">16.5 mm</td></tr>
-          <tr style="border-bottom: 1px solid var(--border-subtle);"><td style="padding: 8px;">US 7.0</td><td style="padding: 8px;">54</td><td style="padding: 8px;">17.3 mm</td></tr>
-        </table>
-      </div>
-      <div>
-        <h4 style="margin-bottom: 0.6rem; color: var(--accent-gold);">Necklace Drape Lengths</h4>
-        <p style="font-size: 0.85rem;"><strong>15-16 Inches (Choker):</strong> Rests precisely at the base of the throat.<br/>
-        <strong>18 Inches (Princess):</strong> Rests elegantly across the collarbone.<br/>
-        <strong>20-24 Inches (Matinee):</strong> Rests above the heart, ideal for layered pendants.</p>
-      </div>
-    </div>
-  </div>
-
-  <!-- Book Appointment Modal -->
-  <div class="modal-box" id="modal-appointment" style="max-width: 600px;">
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; border-bottom: 1px solid var(--border-subtle); padding-bottom: 0.8rem;">
-      <h3 style="font-size: 1.4rem;">Book Private Salon Appointment</h3>
-      <button class="close-btn" onclick="app.closeAllDrawersAndModals()">✕</button>
-    </div>
-    <form onsubmit="event.preventDefault(); app.showToast('Private Salon Appointment Reserved!'); app.closeAllDrawersAndModals();" style="display: flex; flex-direction: column; gap: 1.2rem;">
-      <div>
-        <label style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.15em; display: block; margin-bottom: 0.4rem;">Preferred Salon Location</label>
-        <select style="width: 100%; padding: 0.8rem; background: var(--bg-primary); border: 1px solid var(--border-subtle); color: var(--text-primary);">
-          <option>Paris Place Vendôme Suite</option>
-          <option>London Old Bond Street Salon</option>
-          <option>New York Fifth Avenue VIP Salon</option>
-          <option>4K Virtual High-Definition Video Consultation</option>
-        </select>
-      </div>
-      <div>
-        <label style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.15em; display: block; margin-bottom: 0.4rem;">Preferred Date & Time</label>
-        <input type="datetime-local" required style="width: 100%; padding: 0.8rem; background: var(--bg-primary); border: 1px solid var(--border-subtle); color: var(--text-primary);" />
-      </div>
-      <button type="submit" class="btn btn-gold" style="width: 100%; margin-top: 1rem;">Confirm Reservation</button>
-    </form>
-  </div>
-
-  <!-- ==================== LUXURY FOOTER ==================== -->
-  <footer class="luxury-footer">
-    <div class="footer-grid">
-      <div class="footer-brand">
-        <span class="logo-title">Aurelisse</span>
-        <p style="max-width: 340px; color: rgba(250, 247, 242, 0.7); font-size: 0.9rem; margin-bottom: 1.5rem;">
-          L'Éclat de l'Élégance. Handcrafted Place Vendôme high jewellery, conflict-free GIA diamonds, and eternal heirloom designs since 1894.
+  <!-- ==================== VIEW 1: HOME ==================== -->
+  <main id="view-home" class="app-view active">
+    <!-- Hero Section -->
+    <section class="hero-section" style="position: relative; background: #1A1A1A; color: #FAF7F2; padding: 8rem 5%; text-align: center; border-bottom: 1px solid var(--border-gold);">
+      <div style="max-width: 850px; margin: 0 auto; position: relative; z-index: 2;">
+        <span style="display: block; font-size: 0.85rem; letter-spacing: 0.3em; color: #C9A961; text-transform: uppercase; margin-bottom: 1.5rem;">
+          High Jewellery • Paris
+        </span>
+        <h1 style="font-family: var(--font-serif); font-size: clamp(2.8rem, 5vw, 4.2rem); font-weight: 400; line-height: 1.15; margin-bottom: 1.8rem; color: #FAF7F2;">
+          L'Éclat de l'Élégance
+        </h1>
+        <p style="font-size: 1.15rem; color: #D1CEC7; line-height: 1.7; max-width: 650px; margin: 0 auto 2.5rem auto; font-weight: 300;">
+          Designed with absolute restraint and timeless mastery. Explore our Place Vendôme archive of GIA-certified diamond solitaires and high-jewellery creations.
         </p>
-        <div style="display: flex; gap: 1.2rem; font-size: 1.2rem;">
-          <a href="#" title="Instagram" style="color: var(--accent-gold); text-decoration: none;">✦ IG</a>
-          <a href="#" title="Pinterest" style="color: var(--accent-gold); text-decoration: none;">✦ PT</a>
-          <a href="#" title="WeChat / WhatsApp" style="color: var(--accent-gold); text-decoration: none;">✦ WA</a>
+        <button class="btn btn-gold" onclick="app.showSection('products')" style="padding: 1.1rem 2.8rem; font-size: 0.95rem; letter-spacing: 0.2em; text-transform: uppercase; background: #C9A961; border: none; color: #1A1A1A; font-weight: 600; cursor: pointer;">
+          Shop Now
+        </button>
+      </div>
+    </section>
+
+    <!-- 4 Category Cards Grid -->
+    <section class="section-padding" style="padding: 5rem 5%;">
+      <div class="section-header" style="text-align: center; margin-bottom: 3.5rem;">
+        <span class="sub-label" style="display: block; font-size: 0.8rem; letter-spacing: 0.2em; color: var(--accent-gold); text-transform: uppercase; margin-bottom: 0.5rem;">Curated Archives</span>
+        <h2 style="font-family: var(--font-serif); font-size: 2.4rem; color: var(--text-primary); margin: 0;">Explore Our 4 Master Categories</h2>
+      </div>
+      <div id="home-categories-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 2rem; max-width: 1400px; margin: 0 auto;"></div>
+    </section>
+
+    <!-- Featured Products Row (6 Items) -->
+    <section class="section-padding" style="padding: 5rem 5%; background: var(--bg-card); border-top: 1px solid var(--border-gold);">
+      <div class="section-header" style="text-align: center; margin-bottom: 3.5rem;">
+        <span class="sub-label" style="display: block; font-size: 0.8rem; letter-spacing: 0.2em; color: var(--accent-gold); text-transform: uppercase; margin-bottom: 0.5rem;">Vendôme Selections</span>
+        <h2 style="font-family: var(--font-serif); font-size: 2.4rem; color: var(--text-primary); margin: 0;">Featured Masterpieces</h2>
+      </div>
+      <div id="home-trending-grid" class="products-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2.5rem; max-width: 1400px; margin: 0 auto;"></div>
+    </section>
+  </main>
+
+  <!-- ==================== VIEW 2: SHOP / PRODUCTS CATALOG ==================== -->
+  <main id="view-products" class="app-view" style="padding: 3rem 5% 6rem 5%;">
+    <div style="max-width: 1400px; margin: 0 auto;">
+      <div class="section-header" style="text-align: center; margin-bottom: 2.5rem;">
+        <span class="sub-label" style="display: block; font-size: 0.8rem; letter-spacing: 0.2em; color: var(--accent-gold); text-transform: uppercase; margin-bottom: 0.5rem;">Haute Joaillerie & Classics</span>
+        <h1 id="products-page-title" style="font-family: var(--font-serif); font-size: 2.8rem; color: var(--text-primary); margin: 0;">Complete Place Vendôme Collection</h1>
+      </div>
+
+      <!-- Real-time Search & Category Filter Pills -->
+      <div style="background: var(--bg-card); border: 1px solid var(--border-gold); padding: 2rem; margin-bottom: 3.5rem;">
+        <!-- Search Bar -->
+        <div style="max-width: 600px; margin: 0 auto 1.8rem auto;">
+          <input type="text" id="shop-search-input" placeholder="Search by piece name, diamond shape, or material..." oninput="app.searchProducts(this.value)" style="width: 100%; padding: 1rem 1.4rem; border: 1px solid var(--border-gold); background: var(--bg-primary); font-family: var(--font-sans); font-size: 0.95rem; color: var(--text-primary); outline: none;" />
+        </div>
+
+        <!-- 4 Category Filter Buttons + All -->
+        <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+          <button class="btn btn-outline filter-pill-btn" data-cat="All" onclick="app.filterCategory('All')" style="padding: 0.6rem 1.6rem; font-size: 0.82rem;">✦ All 20 Creations</button>
+          <button class="btn btn-outline filter-pill-btn" data-cat="Rings" onclick="app.filterCategory('Rings')" style="padding: 0.6rem 1.6rem; font-size: 0.82rem;">Rings (5)</button>
+          <button class="btn btn-outline filter-pill-btn" data-cat="Necklaces" onclick="app.filterCategory('Necklaces')" style="padding: 0.6rem 1.6rem; font-size: 0.82rem;">Necklaces (5)</button>
+          <button class="btn btn-outline filter-pill-btn" data-cat="Earrings" onclick="app.filterCategory('Earrings')" style="padding: 0.6rem 1.6rem; font-size: 0.82rem;">Earrings (5)</button>
+          <button class="btn btn-outline filter-pill-btn" data-cat="Bracelets" onclick="app.filterCategory('Bracelets')" style="padding: 0.6rem 1.6rem; font-size: 0.82rem;">Bracelets (5)</button>
         </div>
       </div>
 
-      <div class="footer-col">
-        <h4>High Archives</h4>
-        <ul class="footer-links">
-          <li><a href="#categories">Solitaire Rings</a></li>
-          <li><a href="#categories">Diamond Rivières</a></li>
-          <li><a href="#categories">Royal Sapphires</a></li>
-          <li><a href="#categories">Bridal Collections</a></li>
-          <li><a href="#categories">PT950 Platinum</a></li>
-          <li><a href="#categories">Men's Jewellery</a></li>
-        </ul>
-      </div>
+      <!-- Products Grid -->
+      <div id="products-main-grid" class="products-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2.5rem;"></div>
+    </div>
+  </main>
 
-      <div class="footer-col">
-        <h4>Client Services</h4>
-        <ul class="footer-links">
-          <li><a href="#contact">Private Appointments</a></li>
-          <li><a href="#faqs">Concierge WhatsApp</a></li>
-          <li><a href="#faqs">GIA Monograph Verification</a></li>
-          <li><a href="#faqs">Return & Exchange Policy</a></li>
-          <li><a href="#about">Our Place Vendôme Atelier</a></li>
-          <li><a href="#offers">Privilege Reductions</a></li>
-        </ul>
-      </div>
+  <!-- ==================== VIEW 3: PRODUCT DETAIL VIEW ==================== -->
+  <main id="view-product-detail" class="app-view" style="padding: 3rem 5% 6rem 5%;"></main>
 
-      <div class="footer-col">
-        <h4>Join the Aurelisse Circle</h4>
-        <p style="color: rgba(250, 247, 242, 0.7); font-size: 0.85rem; margin-bottom: 1.2rem;">
-          Subscribe to receive invitations to private high jewellery viewings and seasonal Place Vendôme monographs.
+  <!-- ==================== VIEW 4: CART VIEW ==================== -->
+  <main id="view-cart" class="app-view" style="padding: 4rem 5% 6rem 5%;">
+    <div style="max-width: 1000px; margin: 0 auto; background: var(--bg-card); border: 1px solid var(--border-gold); padding: 3rem;">
+      <h1 style="font-family: var(--font-serif); font-size: 2.4rem; border-bottom: 1px solid var(--border-gold); padding-bottom: 1rem; margin-top: 0;">
+        Your Place Vendôme Shopping Bag
+      </h1>
+
+      <!-- Cart Items Container -->
+      <div id="cart-items-container" style="margin: 2rem 0;"></div>
+
+      <!-- Cart Total & WhatsApp Checkout -->
+      <div style="border-top: 2px solid var(--border-gold); padding-top: 2rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 2rem;">
+        <div>
+          <span style="font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.15em; color: var(--text-secondary);">Estimated Total (Insured Shipping Included)</span>
+          <div id="cart-total-amount" style="font-family: var(--font-serif); font-size: 2.4rem; font-weight: 700; color: var(--text-primary); margin-top: 0.3rem;">
+            $0
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+          <button class="btn btn-outline" onclick="app.showSection('products')" style="padding: 1rem 2rem;">Continue Shopping</button>
+          <button class="btn btn-gold" onclick="app.orderCartViaWhatsApp()" style="padding: 1rem 2.5rem; background: #25D366; border-color: #25D366; color: white; font-weight: 600;">
+            Order Cart via WhatsApp
+          </button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- ==================== VIEW 5: ABOUT / MAISON & HERITAGE ==================== -->
+  <main id="view-about" class="app-view" style="padding: 5rem 5% 7rem 5%;">
+    <div style="max-width: 900px; margin: 0 auto; text-align: center;">
+      <span class="sub-label" style="display: block; font-size: 0.8rem; letter-spacing: 0.25em; color: var(--accent-gold); text-transform: uppercase; margin-bottom: 1rem;">Founded 1894 • Rue de la Paix</span>
+      <h1 style="font-family: var(--font-serif); font-size: 3.2rem; color: var(--text-primary); margin-bottom: 2.5rem;">
+        The Heritage of Quiet Restraint
+      </h1>
+      
+      <div style="font-size: 1.15rem; line-height: 1.85; color: var(--text-secondary); text-align: left; display: flex; flex-direction: column; gap: 1.8rem; background: var(--bg-card); border: 1px solid var(--border-gold); padding: 3.5rem;">
+        <p style="margin: 0;">
+          For well over a century, the House of Aurelisse has stood as a beacon of uncompromising Parisian high jewellery. Established in 1894 by master lapidary Henri Aurelisse, our atelier was born from a singular, rebellious philosophy: true luxury never shouts. While European courts indulged in ornamental excess, Aurelisse championed the purity of form, architectural balance, and the unadorned fire of exceptional stones.
         </p>
-        <form class="newsletter-box" onsubmit="event.preventDefault(); app.showToast('Welcome to the Aurelisse Inner Circle.'); this.reset();">
-          <input type="email" placeholder="Enter VIP email address..." required class="newsletter-input" />
-          <button type="submit" class="newsletter-btn">JOIN</button>
+        <p style="margin: 0;">
+          Each masterpiece within our Place Vendôme archive is hand-forged by Senior Jewelers who have dedicated lifetimes to mastering the traditional art of micro-pavé setting, articulated gold latticework, and platinum forging. We source only GIA-certified D-to-F color diamonds of VVS and Flawless clarity, alongside untreated rare colored gemstones from the world's most responsible and historically significant mines.
+        </p>
+        <p style="margin: 0;">
+          Today, Aurelisse remains dedicated to this quiet nobility. We do not design seasonal decorations; we commission heirlooms destined to transcend generations. Whether experiencing our creations in our Place Vendôme salon or via our dedicated digital concierge, you are acquiring a piece of enduring French artistry.
+        </p>
+      </div>
+    </div>
+  </main>
+
+  <!-- ==================== VIEW 6: CONTACT / VIP CONCIERGE ==================== -->
+  <main id="view-contact" class="app-view" style="padding: 5rem 5% 7rem 5%;">
+    <div style="max-width: 800px; margin: 0 auto;">
+      <div style="text-align: center; margin-bottom: 3.5rem;">
+        <span class="sub-label" style="display: block; font-size: 0.8rem; letter-spacing: 0.25em; color: var(--accent-gold); text-transform: uppercase; margin-bottom: 1rem;">Private Consultation</span>
+        <h1 style="font-family: var(--font-serif); font-size: 3rem; color: var(--text-primary); margin: 0;">Contact Our Senior Concierge</h1>
+      </div>
+
+      <div style="background: var(--bg-card); border: 1px solid var(--border-gold); padding: 3.5rem;">
+        <form id="contact-form" onsubmit="app.handleContactSubmit(event)">
+          <div style="margin-bottom: 1.8rem;">
+            <label style="display: block; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--text-primary); margin-bottom: 0.6rem;">Your Full Name *</label>
+            <input type="text" required placeholder="Lord / Lady / Distinguished Patron..." style="width: 100%; padding: 1rem; border: 1px solid var(--border-gold); background: var(--bg-primary); font-family: var(--font-sans); font-size: 1rem; outline: none;" />
+          </div>
+
+          <div style="margin-bottom: 1.8rem;">
+            <label style="display: block; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--text-primary); margin-bottom: 0.6rem;">Your Email Address *</label>
+            <input type="email" required placeholder="patron@domain.com..." style="width: 100%; padding: 1rem; border: 1px solid var(--border-gold); background: var(--bg-primary); font-family: var(--font-sans); font-size: 1rem; outline: none;" />
+          </div>
+
+          <div style="margin-bottom: 2.2rem;">
+            <label style="display: block; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--text-primary); margin-bottom: 0.6rem;">Commission or Inquiry Details *</label>
+            <textarea rows="5" required placeholder="Please detail your desired gemstone, finger size, or private salon consultation inquiry..." style="width: 100%; padding: 1rem; border: 1px solid var(--border-gold); background: var(--bg-primary); font-family: var(--font-sans); font-size: 1rem; outline: none;"></textarea>
+          </div>
+
+          <button type="submit" class="btn btn-primary" style="width: 100%; padding: 1.2rem; font-size: 1rem; letter-spacing: 0.15em; text-transform: uppercase;">
+            Submit Inquiry to Place Vendôme
+          </button>
         </form>
-        <div style="font-size: 0.75rem; color: rgba(250, 247, 242, 0.45); margin-top: 1.5rem; letter-spacing: 0.1em; text-transform: uppercase;">
-          Insured Worldwide Armored Delivery via Brinks & FedEx VIP
-        </div>
+
+        <!-- Feedback Message Area -->
+        <div id="contact-feedback-message" style="display: none;"></div>
+      </div>
+    </div>
+  </main>
+
+  <!-- ==================== FOOTER ==================== -->
+  <footer style="background: #1A1A1A; color: #FAF7F2; padding: 5rem 5% 3rem 5%; border-top: 1px solid var(--border-gold);">
+    <div style="max-width: 1400px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 3rem; margin-bottom: 4rem;">
+      <div>
+        <span style="font-family: var(--font-serif); font-size: 1.8rem; font-weight: 700; letter-spacing: 0.25em; text-transform: uppercase; display: block; margin-bottom: 0.5rem;">Aurelisse</span>
+        <span style="font-size: 0.75rem; letter-spacing: 0.2em; color: #C9A961; text-transform: uppercase; display: block; margin-bottom: 1.5rem;">High Jewellery • Paris</span>
+        <p style="font-size: 0.9rem; color: #D1CEC7; line-height: 1.7; margin: 0;">
+          Place Vendôme Headquarters<br>
+          75001 Paris, France<br>
+          Tel: +33 1 42 60 88 00
+        </p>
+      </div>
+
+      <div>
+        <h4 style="font-family: var(--font-serif); font-size: 1.2rem; margin: 0 0 1.2rem 0; color: #C9A961;">Master Collections</h4>
+        <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0.8rem;">
+          <li><a href="javascript:void(0)" onclick="app.filterCategory('Rings')" style="color: #FAF7F2; text-decoration: none; font-size: 0.9rem;">Rings & Solitaires</a></li>
+          <li><a href="javascript:void(0)" onclick="app.filterCategory('Necklaces')" style="color: #FAF7F2; text-decoration: none; font-size: 0.9rem;">Diamond Rivières</a></li>
+          <li><a href="javascript:void(0)" onclick="app.filterCategory('Earrings')" style="color: #FAF7F2; text-decoration: none; font-size: 0.9rem;">Chandelier Earrings</a></li>
+          <li><a href="javascript:void(0)" onclick="app.filterCategory('Bracelets')" style="color: #FAF7F2; text-decoration: none; font-size: 0.9rem;">Tennis Bracelets</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h4 style="font-family: var(--font-serif); font-size: 1.2rem; margin: 0 0 1.2rem 0; color: #C9A961;">Client Care</h4>
+        <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0.8rem;">
+          <li><a href="javascript:void(0)" onclick="app.showSection('contact')" style="color: #FAF7F2; text-decoration: none; font-size: 0.9rem;">Private VIP Salon Appointments</a></li>
+          <li><a href="javascript:void(0)" onclick="app.showSection('about')" style="color: #FAF7F2; text-decoration: none; font-size: 0.9rem;">GIA Diamond Authenticity</a></li>
+          <li><a href="javascript:void(0)" onclick="app.showSection('cart')" style="color: #FAF7F2; text-decoration: none; font-size: 0.9rem;">Insured Armored Courier Delivery</a></li>
+          <li><a href="javascript:void(0)" onclick="app.showSection('contact')" style="color: #FAF7F2; text-decoration: none; font-size: 0.9rem;">Bespoke Commissions & Sizing</a></li>
+        </ul>
       </div>
     </div>
 
-    <div class="footer-bottom">
-      <div>© 2026 The House of Aurelisse • Place Vendôme, Paris • All Rights Reserved.</div>
-      <div style="display: flex; gap: 1.5rem;">
-        <span>VISA VIP</span> • <span>MASTERCARD BLACK</span> • <span>AMEX CENTURION</span> • <span>APPLE PAY</span>
-      </div>
-      <div>
-        <a href="#home" style="color: var(--accent-gold); text-decoration: none; text-transform: uppercase; letter-spacing: 0.15em;">↑ Back to Top</a>
-      </div>
+    <div style="text-align: center; border-top: 1px solid rgba(201,169,97,0.2); padding-top: 2rem; font-size: 0.8rem; color: #999;">
+      &copy; 2026 Aurelisse Place Vendôme Paris. All Rights Reserved. Designed with Quiet Luxury.
     </div>
   </footer>
 
-  <!-- Application Logic Engine -->
-  <script type="module" src="./js/app.js"></script>
+  <!-- Toast Notification -->
+  <div id="cart-toast"></div>
+
+  <!-- Relative JavaScript Module (NO LEADING SLASH!) -->
+  <script type="module" src="js/app.js"></script>
 </body>
 </html>
