@@ -256,7 +256,7 @@ class AurelisseEngine {
         ${p.badge ? `<span class="product-badge ${p.badge === 'Limited Edition' || p.badge === 'Masterpiece' ? 'gold' : ''}">${p.badge}</span>` : ''}
         <div class="product-card-media">
           <a href="#product-details?id=${p.id}">
-            <img src="${p.image}" alt="${p.name}" class="product-card-img" loading="lazy" />
+            <img src="${p.image}" alt="${p.name}" class="product-card-img" loading="lazy" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1603561591411-07134e71a2a9?auto=format&fit=crop&w=800&q=85';" />
           </a>
           <div class="product-actions">
             <button class="action-btn btn-quickview" title="Quick View" onclick="app.openQuickView('${p.id}')">
@@ -364,12 +364,12 @@ class AurelisseEngine {
       <div class="detail-grid">
         <div class="detail-gallery aos-fade">
           <div class="gallery-main" id="gallery-main-viewport" onmousemove="app.handleZoom(event)" onmouseleave="app.resetZoom()">
-            <img src="${product.images?.[0] || product.image}" id="gallery-main-img" alt="${product.name}" />
+            <img src="${product.images?.[0] || product.image}" id="gallery-main-img" alt="${product.name}" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1603561591411-07134e71a2a9?auto=format&fit=crop&w=1200&q=85';" />
           </div>
           <div class="gallery-thumbs">
             ${(product.images || [product.image]).map((imgUrl, idx) => `
               <div class="thumb-btn ${idx === 0 ? 'active' : ''}" onclick="app.switchGalleryImage('${imgUrl}', this)">
-                <img src="${imgUrl}" alt="${product.name}" />
+                <img src="${imgUrl}" alt="${product.name}" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1603561591411-07134e71a2a9?auto=format&fit=crop&w=200&q=85';" />
               </div>
             `).join('')}
           </div>
