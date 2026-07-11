@@ -1,30 +1,26 @@
 /**
  * Aurelisse — L'Éclat de l'Élégance
  * Simplified, 100% Reliable Static E-Commerce Engine (Option A SPA Architecture)
- * Zero Backend Calls • Relative Paths Only • Synchronous Section Rendering
- *
- * PATCH NOTE: All onerror image fallbacks now generate a UNIQUE placeholder
- * per product/category (using its own name), instead of pointing every
- * broken image to the same shared Unsplash photo. This fixes the
- * "repeated images" symptom even before the root cause in data.js is fixed.
+ * Zero Backend Calls • Relative Paths Only • Synchronous Section Rendering • Restrained CSS/JS Animations
  */
- 
+
 import { BRAND_CONFIG, CATEGORIES, PRODUCTS } from './data.js';
- 
+
 // Generates a guaranteed-to-load, unique placeholder image URL from any label
 function fallbackImage(label, size = 800) {
   const text = encodeURIComponent(label || 'Aurelisse');
   return `https://placehold.co/${size}x${size}/FAF7F2/1A1A1A?text=${text}`;
 }
- 
+
 class AurelisseEngine {
   constructor() {
     this.activeCategory = 'All';
     this.searchQuery = '';
     this.cart = [];
+    this.scrollObserver = null;
     this.init();
   }
- 
+
   init() {
     // Load cart from localStorage if available
     try {
@@ -33,15 +29,45 @@ class AurelisseEngine {
     } catch (e) {
       this.cart = [];
     }
- 
+
     this.updateCartBadge();
+    this.setupScrollObserver();
     this.renderHomeViews();
     this.setupEventListeners();
- 
+
     // Default to Home section
     this.showSection('home');
   }
- 
+
+  /* --- INTERSECTION OBSERVER SCROLL REVEALS (PART 2) --- */
+  setupScrollObserver() {
+    if ('IntersectionObserver' in window) {
+      this.scrollObserver = new IntersectionObserver((entries, obs) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('in-view');
+            obs.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+      this.observeScrollReveals();
+    } else {
+      document.querySelectorAll('.scroll-reveal').forEach(el => el.classList.add('in-view'));
+    }
+  }
+
+  observeScrollReveals() {
+    if (this.scrollObserver) {
+      document.querySelectorAll('.scroll-reveal:not(.scroll-reveal-ready):not(.in-view)').forEach(el => {
+        el.classList.add('scroll-reveal-ready');
+        this.scrollObserver.observe(el);
+      });
+    } else {
+      document.querySelectorAll('.scroll-reveal').forEach(el => el.classList.add('in-view'));
+    }
+  }
+
   setupEventListeners() {
     // Handle navigation links synchronously without hash dependency
     document.querySelectorAll('.nav-link').forEach(link => {
@@ -54,7 +80,7 @@ class AurelisseEngine {
       });
     });
   }
- 
+
   /* --- SYNCHRONOUS SECTION ROUTER (OPTION A) --- */
   showSection(sectionId) {
     // Hide all view sections synchronously
@@ -62,7 +88,7 @@ class AurelisseEngine {
       view.style.display = 'none';
       view.classList.remove('active');
     });
- 
+
     // Update active state on navigation items
     document.querySelectorAll('.nav-link').forEach(link => {
       if (link.getAttribute('data-section') === sectionId) {
@@ -71,18 +97,18 @@ class AurelisseEngine {
         link.classList.remove('active');
       }
     });
- 
+
     // Show targeted section
     let target = document.getElementById(`view-${sectionId}`);
     if (!target) {
       target = document.getElementById('view-home');
     }
- 
+
     if (target) {
       target.style.display = 'block';
       target.classList.add('active');
     }
- 
+
     // Trigger data rendering for specific sections right in the same handler
     if (sectionId === 'products' || sectionId === 'shop') {
       this.renderProductsGrid();
@@ -91,18 +117,18 @@ class AurelisseEngine {
     } else if (sectionId === 'home') {
       this.renderHomeViews();
     }
- 
+
     window.scrollTo({ top: 0, behavior: 'smooth' });
+    setTimeout(() => this.observeScrollReveals(), 50);
   }
- 
+
   /* --- RENDER HOME VIEWS --- */
   renderHomeViews() {
-    // Render 4 Category Cards on Home
     const homeCatContainer = document.getElementById('home-categories-grid');
     if (homeCatContainer) {
       homeCatContainer.innerHTML = CATEGORIES.map(cat => `
-        <div class="category-card" onclick="app.filterCategory('${cat.id}')" style="cursor: pointer;">
-          <img src="${cat.image}" alt="${cat.name}" class="category-card-img" onerror="this.onerror=null; this.src='${fallbackImage(cat.name, 600)}';" />
+        <div class="category-card scroll-reveal" onclick="app.filterCategory('${cat.id}')" style="cursor: pointer;">
+          <img src="${cat.image}" alt="${cat.name}" class="category-card-img" onerror="this.onerror=null; this.src='${fallbackImage(cat.name, 800)}';" />
           <div class="category-card-overlay"></div>
           <div class="category-card-info">
             <span>Discover ${cat.count} Pieces</span>
@@ -111,47 +137,48 @@ class AurelisseEngine {
         </div>
       `).join('');
     }
- 
-    // Render 6 Featured Products on Home
+
     const homeProdContainer = document.getElementById('home-trending-grid');
     if (homeProdContainer) {
       const featured = PRODUCTS.slice(0, 6);
       homeProdContainer.innerHTML = featured.map(p => this.createProductCardHTML(p)).join('');
     }
+
+    setTimeout(() => this.observeScrollReveals(), 50);
   }
- 
+
   /* --- PRODUCT CARD HTML GENERATOR --- */
   createProductCardHTML(p) {
     return `
-      <div class="product-card" data-id="${p.id}">
+      <div class="product-card scroll-reveal" data-id="${p.id}">
         <div class="product-card-media" onclick="app.openProductDetail('${p.id}')" style="cursor: pointer;">
           <img src="${p.image}" alt="${p.name}" class="product-card-img" loading="lazy" onerror="this.onerror=null; this.src='${fallbackImage(p.name, 800)}';" />
+          <div class="product-badge gold">${p.category}</div>
         </div>
         <div class="product-card-body">
           <span class="product-brand">${p.brand || 'Aurelisse'}</span>
           <a href="javascript:void(0)" onclick="app.openProductDetail('${p.id}')" class="product-title">${p.name}</a>
-          <div class="product-price-row">
-            <div class="product-price">$${p.price.toLocaleString()}</div>
-            <button class="btn btn-primary" style="padding: 0.6rem 1.2rem; font-size: 0.75rem;" onclick="app.addToCart('${p.id}')">
-              Add to Cart
+          <div class="product-price-row" style="display: flex; justify-content: space-between; align-items: center; margin-top: auto; padding-top: 0.8rem;">
+            <div class="product-price" style="font-size: 1.15rem; font-weight: 600; color: var(--text-primary);">$${p.price.toLocaleString()}</div>
+            <button class="btn btn-primary" style="padding: 0.5rem 1rem; font-size: 0.72rem;" onclick="app.addToCart('${p.id}')">
+              Add to Bag
             </button>
           </div>
         </div>
       </div>
     `;
   }
- 
+
   /* --- RENDER PRODUCTS GRID & FILTERS --- */
   renderProductsGrid() {
     const container = document.getElementById('products-main-grid');
     const titleEl = document.getElementById('products-page-title');
     if (!container) return;
- 
+
     if (titleEl) {
       titleEl.innerText = this.activeCategory === 'All' ? 'Complete Place Vendôme Collection (20 Masterpieces)' : `${this.activeCategory} Collection`;
     }
- 
-    // Highlight active pill button
+
     document.querySelectorAll('.filter-pill-btn').forEach(btn => {
       if (btn.getAttribute('data-cat') === this.activeCategory) {
         btn.classList.add('active-pill');
@@ -163,13 +190,13 @@ class AurelisseEngine {
         btn.style.color = '#1A1A1A';
       }
     });
- 
+
     let filtered = [...PRODUCTS];
- 
+
     if (this.activeCategory !== 'All') {
       filtered = filtered.filter(p => p.category === this.activeCategory);
     }
- 
+
     if (this.searchQuery && this.searchQuery.trim() !== '') {
       const q = this.searchQuery.toLowerCase().trim();
       filtered = filtered.filter(p => 
@@ -178,7 +205,7 @@ class AurelisseEngine {
         p.category.toLowerCase().includes(q)
       );
     }
- 
+
     if (filtered.length === 0) {
       container.innerHTML = `
         <div style="grid-column: 1/-1; text-align: center; padding: 5rem 0;">
@@ -190,18 +217,20 @@ class AurelisseEngine {
     } else {
       container.innerHTML = filtered.map(p => this.createProductCardHTML(p)).join('');
     }
+
+    setTimeout(() => this.observeScrollReveals(), 50);
   }
- 
+
   filterCategory(category) {
     this.activeCategory = category;
     this.showSection('products');
   }
- 
+
   searchProducts(query) {
     this.searchQuery = query;
     this.renderProductsGrid();
   }
- 
+
   resetFilters() {
     this.activeCategory = 'All';
     this.searchQuery = '';
@@ -209,7 +238,7 @@ class AurelisseEngine {
     if (searchEl) searchEl.value = '';
     this.renderProductsGrid();
   }
- 
+
   /* --- PRODUCT DETAIL VIEW (SYNCHRONOUS & RELIABLE) --- */
   openProductDetail(productId) {
     const p = PRODUCTS.find(x => x.id === productId);
@@ -217,12 +246,12 @@ class AurelisseEngine {
       alert("Product details not found.");
       return;
     }
- 
+
     const container = document.getElementById('view-product-detail');
     if (!container) return;
- 
+
     container.innerHTML = `
-      <div class="section-padding" style="max-width: 1200px; margin: 0 auto;">
+      <div class="section-padding scroll-reveal" style="max-width: 1200px; margin: 0 auto;">
         <button class="btn btn-outline" style="margin-bottom: 2rem; padding: 0.5rem 1.2rem; font-size: 0.8rem;" onclick="app.showSection('products')">
           ← Back to Collection
         </button>
@@ -231,7 +260,7 @@ class AurelisseEngine {
           <div class="detail-media" style="background: var(--bg-card); border: 1px solid var(--border-gold); padding: 2rem; text-align: center;">
             <img src="${p.image}" alt="${p.name}" style="max-width: 100%; height: auto; max-height: 520px; object-fit: contain;" onerror="this.onerror=null; this.src='${fallbackImage(p.name, 1200)}';" />
           </div>
- 
+
           <div class="detail-info">
             <span class="sub-label" style="display: block; margin-bottom: 0.5rem; color: var(--accent-gold); font-size: 0.85rem; letter-spacing: 0.15em; text-transform: uppercase;">
               ${p.brand} • ${p.category}
@@ -246,7 +275,7 @@ class AurelisseEngine {
             <p style="font-size: 1.05rem; line-height: 1.7; color: var(--text-secondary); margin-bottom: 2rem;">
               ${p.description}
             </p>
- 
+
             <div style="background: var(--bg-card); border: 1px solid var(--border-gold); padding: 1.5rem; margin-bottom: 2.5rem;">
               <strong style="display: block; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.5rem; color: var(--accent-gold);">
                 Material & Specifications
@@ -255,7 +284,7 @@ class AurelisseEngine {
                 ${p.material}
               </p>
             </div>
- 
+
             <div style="display: flex; flex-direction: column; gap: 1rem;">
               <button class="btn btn-primary" style="width: 100%; padding: 1.1rem; font-size: 1rem; letter-spacing: 0.12em;" onclick="app.addToCart('${p.id}')">
                 Add to Shopping Bag
@@ -268,16 +297,16 @@ class AurelisseEngine {
         </div>
       </div>
     `;
- 
-    // Immediately show the detail section synchronously
+
     this.showSection('product-detail');
+    setTimeout(() => this.observeScrollReveals(), 50);
   }
- 
+
   /* --- CART OPERATIONS --- */
   addToCart(productId) {
     const p = PRODUCTS.find(x => x.id === productId);
     if (!p) return;
- 
+
     const existing = this.cart.find(item => item.id === p.id);
     if (existing) {
       existing.qty += 1;
@@ -290,14 +319,12 @@ class AurelisseEngine {
         qty: 1
       });
     }
- 
+
     this.saveCart();
     this.updateCartBadge();
-    
-    // Show cart view or clean notification
     this.showCartNotification(p.name);
   }
- 
+
   showCartNotification(itemName) {
     const toast = document.getElementById('cart-toast');
     if (toast) {
@@ -306,7 +333,7 @@ class AurelisseEngine {
       setTimeout(() => { toast.style.display = 'none'; }, 3000);
     }
   }
- 
+
   saveCart() {
     try {
       localStorage.setItem('aurelisse_cart', JSON.stringify(this.cart));
@@ -314,7 +341,7 @@ class AurelisseEngine {
       // Memory state fallback if storage disabled
     }
   }
- 
+
   updateCartBadge() {
     const count = this.cart.reduce((sum, item) => sum + item.qty, 0);
     const badge = document.getElementById('cart-count');
@@ -323,12 +350,12 @@ class AurelisseEngine {
       badge.style.display = count > 0 ? 'inline-block' : 'none';
     }
   }
- 
+
   renderCartView() {
     const container = document.getElementById('cart-items-container');
     const totalEl = document.getElementById('cart-total-amount');
     if (!container) return;
- 
+
     if (this.cart.length === 0) {
       container.innerHTML = `
         <div style="text-align: center; padding: 4rem 1rem;">
@@ -340,13 +367,13 @@ class AurelisseEngine {
       if (totalEl) totalEl.innerText = '$0';
       return;
     }
- 
+
     let total = 0;
     container.innerHTML = this.cart.map((item, idx) => {
       const itemTotal = item.price * item.qty;
       total += itemTotal;
       return `
-        <div class="cart-item-row" style="display: flex; gap: 1.5rem; align-items: center; padding: 1.5rem 0; border-bottom: 1px solid var(--border-gold);">
+        <div class="cart-item-row scroll-reveal" style="display: flex; gap: 1.5rem; align-items: center; padding: 1.5rem 0; border-bottom: 1px solid var(--border-gold);">
           <img src="${item.image}" alt="${item.name}" style="width: 80px; height: 80px; object-fit: contain; border: 1px solid var(--border-gold); background: var(--bg-card);" onerror="this.onerror=null; this.src='${fallbackImage(item.name, 200)}';" />
           <div style="flex: 1;">
             <h4 style="margin: 0 0 0.4rem 0; font-family: var(--font-serif); font-size: 1.2rem;">${item.name}</h4>
@@ -364,10 +391,11 @@ class AurelisseEngine {
         </div>
       `;
     }).join('');
- 
+
     if (totalEl) totalEl.innerText = `$${total.toLocaleString()}`;
+    setTimeout(() => this.observeScrollReveals(), 50);
   }
- 
+
   updateCartQty(productId, delta) {
     const item = this.cart.find(x => x.id === productId);
     if (!item) return;
@@ -380,37 +408,35 @@ class AurelisseEngine {
     this.updateCartBadge();
     this.renderCartView();
   }
- 
+
   removeFromCart(productId) {
     this.cart = this.cart.filter(x => x.id !== productId);
     this.saveCart();
     this.updateCartBadge();
     this.renderCartView();
   }
- 
-  /* --- WHATSAPP ORDERING ENGINE --- */
+
+  /* --- WHATSAPP ORDERING ENGINE (PART 3 EXACT FORMAT) --- */
   orderViaWhatsApp(productId, qty = 1) {
     const p = PRODUCTS.find(x => x.id === productId);
     if (!p) return;
     const phone = BRAND_CONFIG.whatsappNumber || "919999999999";
-    const rawMsg = `Hello Aurelisse,\nI would like to order the following piece.\nProduct Name: ${p.name}\nPrice: $${p.price.toLocaleString()}\nQuantity: ${qty}\nPlease assist me with my order.\nThank you.`;
-    const encoded = encodeURIComponent(rawMsg);
-    window.open(`https://wa.me/${phone}?text=${encoded}`, '_blank');
+    const msg = `Hello Aurelisse,\nI would like to order the following piece.\nProduct: ${p.name}\nPrice: $${p.price}\nQuantity: ${qty}\nThank you.`;
+    window.open(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`, '_blank');
   }
- 
+
   orderCartViaWhatsApp() {
     if (this.cart.length === 0) {
       alert("Your shopping bag is currently empty.");
       return;
     }
     const phone = BRAND_CONFIG.whatsappNumber || "919999999999";
-    const itemsText = this.cart.map(item => `${item.name} ($${item.price.toLocaleString()} x ${item.qty})`).join("\n");
+    const itemsText = this.cart.map(item => `${item.name} ($${item.price} x ${item.qty})`).join("\n");
     const total = this.cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
-    const rawMsg = `Hello Aurelisse,\nI would like to order the following pieces from my cart:\n\n${itemsText}\n\nTotal: $${total.toLocaleString()}\nPlease assist me with my order.\nThank you.`;
-    const encoded = encodeURIComponent(rawMsg);
-    window.open(`https://wa.me/${phone}?text=${encoded}`, '_blank');
+    const msg = `Hello Aurelisse,\nI would like to order the following pieces from my cart:\n\n${itemsText}\n\nTotal: $${total}\nThank you.`;
+    window.open(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`, '_blank');
   }
- 
+
   /* --- CONTACT FORM SUBMISSION --- */
   handleContactSubmit(e) {
     e.preventDefault();
@@ -428,6 +454,6 @@ class AurelisseEngine {
     if (form) form.reset();
   }
 }
- 
+
 // Instantiate global app engine
 window.app = new AurelisseEngine();
